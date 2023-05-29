@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+stock_card_wizard_default_access,stock_card_wizard_default,wizard.stock_card_wizard,,True,True,True,True

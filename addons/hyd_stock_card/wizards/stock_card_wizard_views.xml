@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="stock_card_wizard_form">
+        <field name="name">wizard.stock_card_wizard.form</field>
+        <field name="model">wizard.stock_card_wizard</field>
+        <field name="arch" type="xml">
+            <form string="Print stock card">
+                <group col="4">
+                    <group colspan="2">
+                        <field name="date_start" />
+                        <field name="location_id" />
+                        <field name="filter_by" />
+                        <field
+                            name="category"
+                            attrs="{'invisible': [('filter_by', '!=', 'category')]}"
+                        />
+                        <field
+                            name="products"
+                            widget="many2many_tags"
+                            attrs="{'invisible': [('filter_by', '!=', 'product')]}"
+                        />
+                    </group>
+                    <group colspan="2">
+                        <field name="date_end" />
+                        <field name="details" />
+                        <field name="group_by_category" />
+                        <field name="is_zero" />
+                    </group>
+                </group>
+                <group>
+                    <field name="report_file_name" />
+                </group>
+                <footer>
+                    <button
+                        name="print_card"
+                        string="Print PDF"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="print_card"
+                        type="object"
+                        default_focus="1"
+                        string="Generate Excel"
+                        class="oe_highlight"
+                        context="{'xls_export':1}"
+                        icon="fa-download"
+                    />
+                    <button special="cancel" string="Cancel" class="btn-default" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="war_stock_card_wizard">
+        <field name="name">Stock card</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wizard.stock_card_wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem
+        id="menu_stock_report_stock_card"
+        name="Stock card"
+        sequence="150"
+        parent="stock.menu_warehouse_report"
+        action="war_stock_card_wizard"
+    />
+</odoo>
