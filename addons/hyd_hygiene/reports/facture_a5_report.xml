@@ -1,0 +1,125 @@
+<odoo>
+
+	<record id="report_facture_a5" model="ir.actions.report">
+      <field name="name">Facture A5</field>
+      <field name="model">account.move</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">hyd_hygiene.facture_a5_template</field>
+      <field name="report_file">hyd_hygiene.facture_a5_template</field>
+      <field name="paperformat_id" ref="hyd_hygiene.paperformat_a5_hygiene"/>
+      <field name="print_report_name">'Facture - %s' % (object.name)</field>
+      <field name="binding_model_id" ref="account.model_account_move"/>
+      <field name="binding_type">report</field>
+  </record>
+
+	<template id="facture_a5_template" name="Facture A5 Template Report">
+      <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+              <t t-set="lang" t-value="o.partner_id.lang"/>
+              <t t-call="hyd_hygiene.facture_a5_template_document" t-lang="lang" />
+          </t>
+      </t>
+  </template>
+
+	<template id="facture_a5_template_document">
+
+    <t t-call="hyd_hygiene.external_layout_hygiene">
+    	
+    	<div class="row" style="font-size:85%;">
+        <div class="col-4 text-center"><strong>Vendeur:</strong> </div>
+        <div class="col-4 text-center"><strong>Facture</strong><br/><span t-field="o.name"/></div>
+        <div class="col-4 text-center">
+        <br/><h5><strong><span t-field="o.partner_id"/></strong></h5></div>
+      </div>
+      <div class="row">
+      	<div class="col-6">
+      		<p>Date de tirage <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')" /> a <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')" /></p>
+      	</div>
+      	<div class="col-6">
+      		Date Facture: <span t-field="o.invoice_date" />
+      	</div>
+      </div>
+      
+    	<table class="table table-sm" border="1" style="width:100%; boder: 1px solid; font-size:85%;">
+          <thead>
+              <tr>
+                  <th>Reference</th>
+                  <th>Designation</th>
+                  <th>Depot</th>
+                  <th>Qte</th>
+                  <th>Unite</th>
+                  <th>Prix Unitaire</th>
+                  <th>Montant total</th>
+              </tr>
+          </thead>
+          <tbody class="invoice_tbody">
+            <t t-set="current_subtotal" t-value="0"/>
+            <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+            <t t-foreach="lines" t-as="line">
+                <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                    <t t-if="line.display_type == 'product'" name="account_invoice_line_accountable">
+                        <td name="account_invoice_line_name"><span t-field="line.product_id.default_code" t-options="{'widget': 'text'}"/></td>
+                        <td name="account_invoice_line_name"><span t-field="line.product_id.name" t-options="{'widget': 'text'}"/></td>
+                        <td class="text-end"></td>
+                        <td class="text-end"><span t-field="line.quantity"/></td>
+                        <td><span t-field="line.product_uom_id"/></td>
+                        <td t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                            <span t-esc="(line.price_total * 1.0 /line.quantity)" t-options="{'widget': 'float', 'precision': 2}"/>
+                        </td>
+                        <td class="text-end o_price_total">
+                            <span class="text-nowrap" t-field="line.price_total" />
+                        </td>
+                    </t>
+                    <!-- <t t-if="line.display_type == 'line_section'">
+                        <td colspan="99">
+                            <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                        </td>
+                        <t t-set="current_section" t-value="line"/>
+                        <t t-set="current_subtotal" t-value="0"/>
+                    </t>
+                    <t t-if="line.display_type == 'line_note'">
+                        <td colspan="99">
+                            <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                        </td>
+                    </t> -->
+                </tr>
+
+                <!-- <t t-if="current_section and (line_last or lines[line_index+1].display_type == 'line_section')">
+                    <tr class="is-subtotal text-end">
+                        <td colspan="99">
+                            <strong class="mr16">Subtotal</strong>
+                            <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                        </td>
+                    </tr>
+                </t> -->
+            </t>
+        </tbody>
+      </table>
+      
+      <div class="row" style="font-size:85%;">
+        <div class="col-6">ARRETE LA PRESENTE FACTURE LA SOMME DE <strong><span t-field="o.word_amount_total" /></strong></div>
+        <div class="col-2 offset-2">Montant Total</div>
+        <div class="col-2 text-end"><span t-field="o.amount_total"/></div>
+      </div>
+      
+      <div class="row" style="font-size:85%;">
+        <div class="col-2 offset-8"><strong>Reglement</strong></div>
+        <div class="col-2 text-end"><span t-field="o.amount_total"/></div>
+      </div>
+      
+      <p><i><strong>Les produits achetes ne sont ni repris, ni echanges</strong></i></p>
+      
+      <div class="row">
+        <div class="col-6">CAISSIER ...................... </div>
+        <div class="col-4 offset-2">CLIENT .........................</div>
+      </div>
+
+    </t>
+
+	</template>
+
+</odoo>
