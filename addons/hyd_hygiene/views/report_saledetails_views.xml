@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+<template id="report_saledetails_hyd" inherit_id="point_of_sale.report_saledetails" priority="20">
+    
+    <xpath expr="//t[@t-esc='date_start']/../../.." position="after">
+
+        <br/>
+        <h3>Caisse</h3>
+        <table  class="table table-sm">
+            <thead><tr>
+                <th>DEBUT</th>
+                <th>FIN</th>
+                <th>SHOWROOM</th>
+                <th>NOM</th>
+            </tr></thead>
+            <tbody>
+            <tr t-foreach='tellers' t-as='teller'>
+                <td class="text-center"><t t-esc="teller['start']" t-options="{'widget': 'datetime'}" /></td>
+                <td class="text-center"><t t-esc="teller['stop']" t-options="{'widget': 'datetime'}" /></td>
+                <td class="text-center"><t t-esc="teller['pv']" /></td>
+                <td class="text-center"><t t-esc="teller['emp']" /></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br/>
+    </xpath>
+
+</template>
+</odoo>

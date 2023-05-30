@@ -13,7 +13,7 @@
     'version': '16.0.1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account'],
+    'depends': ['base', 'account', 'point_of_sale'],
 
     # always loaded
     'data': [
@@ -22,6 +22,7 @@
             # "views/templates.xml",
             "views/external_layout_hygiene.xml",
             "views/res_company_views.xml",
+            "views/report_saledetails_views.xml",
             # workflow
             # security
             "security/ir.model.access.csv",
