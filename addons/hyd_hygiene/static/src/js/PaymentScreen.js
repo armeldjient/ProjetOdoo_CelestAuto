@@ -4,6 +4,7 @@ odoo.define('hyd_hygiene.PosHygPaymentScreen', function (require) {
     const PaymentScreen = require('point_of_sale.PaymentScreen');
     const { useListener } = require("@web/core/utils/hooks");
     const Registries = require('point_of_sale.Registries');
+    const { isConnectionError } = require('point_of_sale.utils');
 
     const PosHygPaymentScreen = (PaymentScreen) =>
         class extends PaymentScreen {
