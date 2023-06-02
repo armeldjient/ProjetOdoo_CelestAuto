@@ -24,6 +24,22 @@
 	<template id="facture_a5_template_document">
 
     <t t-call="hyd_hygiene.external_layout_hygiene">
+
+        <t t-set="company" t-value="company or o.company_id" />
+        <div class="row">
+            <div class="col-6">
+                <br/>
+                <h5 t-field="company.name" />
+                <p>
+                    <span t-field="company.motto" /><br/>
+                    Tel: <span t-field="company.phone" /> / <span t-field="company.mobile" /><br/>
+                    <span t-field="company.siege_social" />
+                </p>
+            </div>
+            <div class="col-6">
+                <br/>
+            </div>
+        </div>
     	
     	<div class="row" style="font-size:85%;">
         <div class="col-4 text-center"><strong>Vendeur:</strong> </div>
