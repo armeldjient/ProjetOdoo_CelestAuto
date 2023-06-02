@@ -39,6 +39,7 @@
     'assets': {
         'point_of_sale.assets': [
             'hyd_hygiene/static/src/xml/**/*',
+            'hyd_hygiene/static/src/js/*',
         ],
     },
 }
