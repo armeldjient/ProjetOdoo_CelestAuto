@@ -42,7 +42,7 @@
         </div>
     	
     	<div class="row" style="font-size:85%;">
-        <div class="col-4 text-center"><strong>Vendeur:</strong> </div>
+        <div class="col-4 text-center"><strong>Vendeur:</strong><br/><span t-if="o.pos_order_id" t-field="o.pos_order_id.employee_id"/></div>
         <div class="col-4 text-center"><strong>Facture</strong><br/><span t-field="o.name"/></div>
         <div class="col-4 text-center">
         <br/><h5><strong><span t-field="o.partner_id"/></strong></h5></div>
@@ -123,8 +123,10 @@
       </div>
       
       <div class="row" style="font-size:85%;">
+        <t t-set="journal_payment" t-value="[]"/>
+        <t t-set="journal_payment" t-if="o.pos_order_id" t-value="o.pos_order_id.payment_ids and o.pos_order_id.payment_ids.mapped('payment_method_id.name') or []"/>
         <div class="col-2 offset-8"><strong>Reglement</strong></div>
-        <div class="col-2 text-end"><span t-field="o.amount_total"/></div>
+        <div class="col-2 text-end"><span t-esc="','.join(journal_payment)"/></div>
       </div>
       
       <p><i><strong>Les produits achetes ne sont ni repris, ni echanges</strong></i></p>
