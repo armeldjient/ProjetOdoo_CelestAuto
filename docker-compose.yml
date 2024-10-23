@@ -5,7 +5,7 @@ services:
     user: root
     environment:
       - POSTGRES_USER=odoo
-      - POSTGRES_PASSWORD=odoo16@2022      
+      - POSTGRES_PASSWORD=odoo16@2024      
       - POSTGRES_DB=postgres
     restart: always             # run as a service
     volumes:
@@ -17,14 +17,14 @@ services:
     depends_on:
       - db
     ports:
-      - "80:8069"
+      - "8070:8069"
       - "20019:8072" # live chat
     tty: true
     command: --
     environment:
       - HOST=db
       - USER=odoo
-      - PASSWORD=odoo16@2022
+      - PASSWORD=odoo16@2024
     volumes:
       #- /etc/timezone:/etc/timezone:ro
       #- /etc/localtime:/etc/localtime:ro
@@ -33,3 +33,11 @@ services:
       - ./etc:/etc/odoo
     restart: always             # run as a service
     
+  nginx:
+    image: nginx
+    depends_on:
+      - odoo16
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
